@@ -19,7 +19,7 @@ class File
             if ($cur[0] == '.')
                 continue;
 
-            $filename = $dir . "/"  . $cur;
+            $filename = ($directory ? $directory . "/" : "") . $cur;
             $callback($filename);
 
             if (is_dir($filename) && $recursive) {

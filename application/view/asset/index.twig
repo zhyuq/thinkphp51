@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>asset</title>
+    <title>Asset Test</title>
 </head>
 <body>
-<table frame="border" rules="all" >
+
+<table frame="border" rules="all">
     <tr>
         <th>原目录</th>
         <th>导出目录</th>
@@ -16,7 +17,7 @@
     </tr>
     {% for key, value in files %}
         <tr>
-            <th>{{ value }}</th>
+            <th align="left">{{ value|raw }}</th>
             <th>key</th>
             <th>key</th>
             <th>key</th>
