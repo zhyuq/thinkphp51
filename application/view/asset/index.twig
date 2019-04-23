@@ -20,8 +20,8 @@
     </tr>
     {% for key, value in files %}
         <tr>
-            <td>{{ value|raw }}</td>
-            <td><input type="text" class="prefix""></td>
+            <td>{{ value.targetName|raw }}</td>
+            <td><input type="text" class="prefix" onchange="save('{{ value.baseName }}', this.parentNode.parentNode)"></td>
             <td><select name="cars">
                     <option value="volvo">Volvo</option>
                     <option value="saab">Saab</option>
