@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Asset Test</title>
+    <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/reset.css" />
+    <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/global.css" />
+    <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/asset.css" />
 </head>
 <body>
 
-<table frame="border" rules="all">
+<table>
     <tr>
         <th>原目录</th>
         <th>导出目录</th>
@@ -17,12 +20,12 @@
     </tr>
     {% for key, value in files %}
         <tr>
-            <th align="left">{{ value|raw }}</th>
-            <th>key</th>
-            <th>key</th>
-            <th>key</th>
-            <th>key</th>
-            <th>key</th>
+            <td>{{ value|raw }}</td>
+            <td>key</td>
+            <td>key</td>
+            <td>key</td>
+            <td>key</td>
+            <td>key</td>
         </tr>
     {% endfor %}
 </table>
