@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/reset.css" />
     <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/global.css" />
     <link rel="stylesheet" type="text/css" href="{{ __STATIC__ }}/asset.css" />
+    <script src="{{ __STATIC__ }}/asset.js"></script>
 </head>
 <body>
 
@@ -21,22 +22,21 @@
     {% for key, value in files %}
         <tr>
             <td>{{ value.targetName|raw }}</td>
-            <td><input type="text" class="prefix" onchange="save('{{ value.baseName }}', this.parentNode.parentNode)"></td>
-            <td><select name="cars">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
+            <td><input type="text" class="export_name" onchange="save('{{ value.filePath }}', this.parentNode.parentNode)"></td>
+            <td><select class="change_mode">
+                    <option value="delete_old">删除</option>
                 </select></td>
-            <td><select class="mode">
+            <td><select class="type">
                     <option value="copy_without_dir">删除目录拷贝</option>
                     <option value="copy_with_dir">带目录拷贝</option>
                     <option value="scene">场景</option>
                     <option value="model">模型</option>
                 </select></td>
-            <td><select class="lang">
+            <td><select class="language">
                     <option value="lang_cn">大陆</option>
                     <option value="lang_tw">台湾</option>
                 </select></td>
-            <td><input type="button" value="Go"></td>
+            <td><input type="button" value="执行" onclick="execute('{{ value.filePath }}', this.parentNode.parentNode)"></td>
         </tr>
     {% endfor %}
 </table>

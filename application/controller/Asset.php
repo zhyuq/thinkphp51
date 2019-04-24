@@ -5,6 +5,7 @@ namespace app\controller;
 
 use think\Controller;
 use think\facade\Log;
+use think\Request;
 
 class Asset extends Controller
 {
@@ -28,13 +29,18 @@ class Asset extends Controller
             $targetName = sprintf("%s%s -- %s", str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $path_level-5), str_repeat("|", $path_level-5), $baseName);
 
             $assign_file_value = array();
-            $assign_file_value["baseName"] = $baseName;
+            $assign_file_value["filePath"] = $path_tail;
             $assign_file_value["targetName"] = $targetName;
             $assign_file_list[] = $assign_file_value;
 
         }
-        Log::debug($assign_file_list);
+//        Log::debug($assign_file_list);
         $this->assign("files", $assign_file_list);
         return $this->fetch();
+    }
+
+    public function build(Request $request)
+    {
+        return "asset build";
     }
 }
