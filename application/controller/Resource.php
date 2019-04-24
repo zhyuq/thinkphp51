@@ -7,7 +7,7 @@ use think\Controller;
 use think\facade\Log;
 use think\Request;
 
-class Asset extends Controller
+class Resource extends Controller
 {
     public function index()
     {
@@ -41,6 +41,6 @@ class Asset extends Controller
 
     public function build(Request $request)
     {
-        return "asset build";
+        return "resource build";
     }
 }

@@ -31,7 +31,7 @@ function execute(path, node) {
     };
 
     // build the asset
-    open("POST", "/Asset/build", post);
+    open("POST", "/Resource/build", post);
 }
 /**
  * @link http://stackoverflow.com/questions/17793183/how-to-replace-window-open-with-a-post
