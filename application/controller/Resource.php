@@ -6,7 +6,7 @@ namespace app\controller;
 use think\App;
 use think\Controller;
 use think\facade\Log;
-use think\Request;
+use think\facade\Request;
 
 class Resource extends Controller
 {
@@ -59,6 +59,12 @@ class Resource extends Controller
 
     public function build()
     {
-        return "resource build";
+        $path = Request::param("path");
+        $export_name = Request::param("export_name");
+        $change_mode = Request::param("change_mode");
+        $type = Request::param("type");
+        $language = Request::param("language");
+
+        Log::debug(Request::param());
     }
 }
