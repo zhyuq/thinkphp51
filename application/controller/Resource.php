@@ -7,6 +7,7 @@ use think\App;
 use think\Controller;
 use think\facade\Log;
 use think\facade\Request;
+use zyq\File;
 
 class Resource extends Controller
 {
@@ -18,6 +19,7 @@ class Resource extends Controller
         parent::__construct($app);
 
         $this->originPath = $this->request->server("HOME") . "/" . ORIGINAL_PATH;
+        $this->resGitPath = $this->request->server("HOME") . "/" . RES_GIT_PATH;
     }
 
     public function index()
@@ -65,6 +67,15 @@ class Resource extends Controller
         $type = Request::param("type");
         $language = Request::param("language");
 
-        Log::debug(Request::param());
+        $langPath = "cn";
+        if ($language == "lang_cn") {
+            $langPath = "cn";
+        }
+
+        $exportPath = $this->resGitPath . "/" . $langPath . "/" . $export_name;
+
+        File::copyFileWithDirs($this->originPath . "/" . $path, $exportPath);
+
+        return "";
     }
 }

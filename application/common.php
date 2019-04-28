@@ -11,3 +11,4 @@
 
 // 应用公共文件
 define("ORIGINAL_PATH", "坚果云-典藏版");
+define("RES_GIT_PATH", "Documents/study/git-res-test");
