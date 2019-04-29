@@ -74,7 +74,9 @@ class Resource extends Controller
 
         $exportPath = $this->resGitPath . "/" . $langPath . "/" . $export_name;
 
-        File::copyFileWithDirs($this->originPath . "/" . $path, $exportPath);
+        File::copyFileWithDirs($this->originPath . "/" . $path, $exportPath, function ($file, $target) {
+            File::convertPng($file, dirname($target));
+        });
 
         return "";
     }

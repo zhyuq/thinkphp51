@@ -43,7 +43,7 @@ class File
                 return;
             }
 
-            printf("file: copy entire file: %s<br>", $fileName);
+            printf("copy files with dirs file: %s<br />", $fileName);
 
             $sub = substr($fileName, strlen($folder) + 1);
             $dir = $target;
@@ -59,9 +59,8 @@ class File
 
             $finalTarget = $dir . "/" . basename($fileName);
 
-            Log::debug($finalTarget);
             if (!copy($fileName, $finalTarget)) {
-                printf("file: copy entire file error: %s<br>", error_get_last()["message"]);
+                printf("copy files with dirs file: %s<br />", error_get_last()["message"]);
             }
 
             /** @var callable $callback */
@@ -69,5 +68,45 @@ class File
                 $callback($fileName, $finalTarget);
             }
         });
+
+        printf("copy files with dirs done <br />");
+    }
+
+    public static function copyFilesWithoutDirs($folder, $target, $callback = null)
+    {
+        if (!file_exists($target))
+            mkdir($target, 0755, true);
+
+        File::visit($folder, true, function ($fileName) use ($target, $callback) {
+            if (!is_file($fileName))
+                return;
+
+            printf("copy file without dirs %s<br />", $fileName);
+            $baseName = basename($fileName);
+            $dest = $target . "/" . $baseName;
+            if (!copy($fileName, $dest)) {
+                printf("copy file without dirs failure %s<br />", $fileName);
+            }
+
+            /** @var callable $callback */
+            if ($callback) {
+                $callback($fileName, $dest);
+            }
+        });
+
+        printf("copy file without dirs done<br />");
+    }
+
+    public static function convertPng($file, $target)
+    {
+        printf("file: pngquant png file: %s", $file);
+
+        if (!file_exists($target))
+            mkdir($target, 0755, true);
+
+        $cmd = __DIR__ . "/../../../pngquant/pngquant";
+        $dest = $target . "/" . basename($file);
+
+        passthru("$cmd --force --skip-if-larger --verbose $file -o $dest");
     }
 }
