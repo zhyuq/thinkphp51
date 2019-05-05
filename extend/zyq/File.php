@@ -43,7 +43,7 @@ class File
                 return;
             }
 
-            printf("copy files with dirs file: %s<br />", $fileName);
+            printf("copy files with dirs file: %s<br>", $fileName);
 
             $sub = substr($fileName, strlen($folder) + 1);
             $dir = $target;
@@ -60,7 +60,7 @@ class File
             $finalTarget = $dir . "/" . basename($fileName);
 
             if (!copy($fileName, $finalTarget)) {
-                printf("copy files with dirs file: %s<br />", error_get_last()["message"]);
+                printf("copy files with dirs file: %s<br>", error_get_last()["message"]);
             }
 
             /** @var callable $callback */
@@ -69,7 +69,7 @@ class File
             }
         });
 
-        printf("copy files with dirs done <br />");
+        printf("copy files with dirs done <br>");
     }
 
     public static function copyFilesWithoutDirs($folder, $target, $callback = null)
@@ -81,11 +81,11 @@ class File
             if (!is_file($fileName))
                 return;
 
-            printf("copy file without dirs %s<br />", $fileName);
+            printf("copy file without dirs %s<br>", $fileName);
             $baseName = basename($fileName);
             $dest = $target . "/" . $baseName;
             if (!copy($fileName, $dest)) {
-                printf("copy file without dirs failure %s<br />", $fileName);
+                printf("copy file without dirs failure %s<br>", $fileName);
             }
 
             /** @var callable $callback */
@@ -94,7 +94,7 @@ class File
             }
         });
 
-        printf("copy file without dirs done<br />");
+        printf("copy file without dirs done<br>");
     }
 
     public static function convertPng($file, $target)
@@ -108,5 +108,7 @@ class File
         $dest = $target . "/" . basename($file);
 
         passthru("$cmd --force --skip-if-larger --verbose $file -o $dest");
+
+        printf("<br><br>");
     }
 }

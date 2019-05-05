@@ -72,12 +72,40 @@ class Resource extends Controller
             $langPath = "cn";
         }
 
-        $exportPath = $this->resGitPath . "/" . $langPath . "/" . $export_name;
+        $outPath = $this->originPath . "/" . $path;
+        $repo = $this->resGitPath . "/" . $langPath;
+        $funName = camelize("build_" . $type);
+        if (!empty($type)) {
+            call_user_func(array($this, $funName), $outPath, $repo, $export_name, $change_mode);
+        } else {
 
-        File::copyFileWithDirs($this->originPath . "/" . $path, $exportPath, function ($file, $target) {
-            File::convertPng($file, dirname($target));
-        });
+        }
 
         return "";
+    }
+
+    public function buildCopyWithoutDir($path, $repo, $exportName, $changeMode)
+    {
+
+    }
+
+    public function buildCopyWithDir($path, $repo, $export_name, $change_mode)
+    {
+        File::copyFileWithDirs($path, $repo . "/" . $export_name, function ($file, $target) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if ($extension == "png") {
+                File::convertPng($target, dirname($target));
+            } elseif ($extension == "plist") {
+
+            } else {
+
+            }
+
+        });
+    }
+
+    public function buildScene()
+    {
+
     }
 }
