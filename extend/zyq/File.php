@@ -111,4 +111,73 @@ class File
 
         printf("<br><br>");
     }
+
+    public static function splitMapImage($file, $target, $callback)
+    {
+        printf("file: split map image %s<br>", $file);
+
+        $isPng = preg_match('/\.png$/i', $file);
+        $isJpg = preg_match('/\.jpg$/i', $file);
+
+        if (!$isPng && !$isJpg) {
+            return null;
+        }
+
+        if (!file_exists($file)) {
+            return null;
+        }
+
+        if (!file_exists($target)) {
+            mkdir($target, 0755, true);
+        }
+
+        $image = $isPng ? @imagecreatefrompng($file) : @imagecreatefromjpeg($file);
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $limitW = 1024;
+        $limitH = 1024;
+        $countX = ceil($width/$limitW);
+        $countY = ceil($height/$limitH);
+        $info = array();
+
+        for ($x = 0; $x < $countX; $x++) {
+            for ($y = 0; $y < $countY; $y++) {
+                $cropW = ($x == $countX-1) ? $width%$limitW : $limitW;
+                $cropH = ($y == $countY-1) ? $height%$limitH : $limitH;
+                $name = sprintf("%s_%d_%d%s", pathinfo($file, PATHINFO_FILENAME), $x, $y, $isPng?".png":".jpg");
+                $im = @imagecreatetruecolor($cropW, $cropH);
+
+                if ($isPng) {
+                    $trans_colour = imagecolorallocatealpha($im, 0, 0, 0, 127);
+                    imagefill($im, 0, 0, $trans_colour);
+                    imagealphablending($im , false);
+                }
+
+                imagecopyresized($im, $image, 0, 0, $x*$cropW, $y*$cropH, $cropW, $cropH, $cropW, $cropH);
+
+                if ($isPng) {
+                    imagesavealpha($im , true);
+                    imagepng($im, "$target/$name");
+                } else {
+                    imagejpeg($im, "$target/$name");
+                }
+
+                if ($callback) {
+                    $callback("$target/$name");
+                }
+
+                $info[] = array(
+                    "image" => $name,
+                    "x" => $x*$limitW,
+                    "y" => $y*$limitH
+                );
+
+                imagedestroy($im);
+            }
+        }
+
+        imagedestroy($image);
+
+        return $info;
+    }
 }

@@ -86,12 +86,13 @@ class Resource extends Controller
 
     public function buildCopyWithoutDir($path, $repo, $exportName, $changeMode)
     {
+        $target = $repo . "/" . $exportName;
+        if ($changeMode == "delete_old") {
+            printf("Resource: delete folder %s <br>", $target);
+            passthru("rm -rf $target");
+        }
 
-    }
-
-    public function buildCopyWithDir($path, $repo, $export_name, $change_mode)
-    {
-        File::copyFileWithDirs($path, $repo . "/" . $export_name, function ($file, $target) {
+        File::copyFilesWithoutDirs($path, $repo . "/" . $exportName, function ($file, $target) {
             $extension = pathinfo($file, PATHINFO_EXTENSION);
             if ($extension == "png") {
                 File::convertPng($target, dirname($target));
@@ -104,8 +105,119 @@ class Resource extends Controller
         });
     }
 
-    public function buildScene()
+    public function buildCopyWithDir($path, $repo, $exportName, $changeMode)
     {
+        $target = $repo . "/" . $exportName;
+        if ($changeMode == "delete_old") {
+            printf("Resource: delete folder %s <br>", $target);
+            passthru("rm -rf $target");
+        }
+
+        File::copyFileWithDirs($path, $repo . "/" . $exportName, function ($file, $target) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if ($extension == "png") {
+                File::convertPng($target, dirname($target));
+            } elseif ($extension == "plist") {
+
+            } else {
+
+            }
+
+        });
+    }
+
+    public function buildTown($path, $repo, $exportName, $changeMode)
+    {
+        printf("Resource: build town file %s <br>", $path);
+        $target = $repo . "/" . "city";
+        if (!file_exists($target))
+            mkdir($target, 0755, true);
+
+        $earth = "$path/地表.png";
+        $size = getimagesize($earth);
+        if ($size === false) {
+            printf("Resource: build town image file error %s<br>", $earth);
+            return;
+        }
+
+        $data = array(
+            "earth" => array(),
+            "distant" => array(),
+            "cover" => array(),
+            "path" => "",
+            "size" => array(
+                "width" => $size[0],
+                "height" => $size[1]
+            )
+        );
+
+        $isHaveXmlFile = false;
+        File::visit($path, false, function ($fileName) use (&$isHaveXmlFile, $path, $target, $exportName, &$data) {
+            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+            if ($extension == "xml") {
+                $isHaveXmlFile = true;
+            } elseif (preg_match('/地表\.png/', $fileName)) {
+                $arr = File::splitMapImage($fileName, $target, function ($fileName) use ($exportName, &$data) {
+                    $reName = dirname($fileName) . "/{$exportName}_" . basename($fileName);
+                    rename($fileName, $reName);
+
+                    if (preg_match('/\.png$/', $reName)) {
+                        File::convertPng($reName, dirname($reName));
+                    }
+
+                });
+
+                foreach ($arr as $value) {
+                    $data["earth"][] = array(
+                        "image" => "city/{$exportName}_" . basename($value["image"]),
+                        "x" => $value["x"],
+                        "y" => $value["y"]
+                    );
+                }
+            } elseif (preg_match('/远景\.png/', $fileName)) {
+                $arr = File::splitMapImage($fileName, $target, function ($fileName) use ($exportName, &$data) {
+                    $reName = dirname($fileName) . "/{$exportName}_" . basename($fileName);
+                    rename($fileName, $reName);
+
+                    if (preg_match('/\.png$/', $reName)) {
+                        File::convertPng($reName, dirname($reName));
+                    }
+                });
+
+                foreach ($arr as $value) {
+                    $data["distant"][] = array(
+                        "image" => "city/{$exportName}_" . basename($value["image"]),
+                        "x" => $value["x"],
+                        "y" => $value["y"]
+                    );
+                }
+            } elseif (preg_match('/遮挡\.png/', $fileName)) {
+                $arr = File::splitMapImage($fileName, $target, function ($fileName) use ($exportName, &$data) {
+                    $reName = dirname($fileName) . "/{$exportName}_" . basename($fileName);
+                    rename($fileName, $reName);
+
+                    if (preg_match('/\.png$/', $reName)) {
+                        File::convertPng($reName, dirname($reName));
+                    }
+                });
+
+                foreach ($arr as $value) {
+                    $data["cover"][] = array(
+                        "image" => "city/{$exportName}_" . basename($value["image"]),
+                        "x" => $value["x"],
+                        "y" => $value["y"]
+                    );
+                }
+            }
+        });
+
+        if (!$isHaveXmlFile) {
+            printf("Resource: town xml file not found %s<br>", $path);
+            return;
+        }
+
+        $json = json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        file_put_contents("$target/{$exportName}.json", $json);
 
     }
 }

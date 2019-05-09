@@ -24,12 +24,13 @@
             <td>{{ value.targetName|raw }}</td>
             <td><input type="text" class="export_name" value="{{ value.export_name }}" onchange="save('{{ value.filePath }}', this.parentNode.parentNode)"></td>
             <td><select class="change_mode">
+                    <option></option>
                     <option value="delete_old">删除</option>
                 </select></td>
             <td><select class="type">
                     <option value="copy_without_dir" {% if value.type == "copy_without_dir" %}selected="selected"{% endif %}>删除目录拷贝</option>
                     <option value="copy_with_dir">带目录拷贝</option>
-                    <option value="scene">场景</option>
+                    <option value="town">城镇</option>
                     <option value="model">模型</option>
                 </select></td>
             <td><select class="language">
