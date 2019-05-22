@@ -180,4 +180,27 @@ class File
 
         return $info;
     }
+
+    public static function convertFbx($fbx, $target)
+    {
+        printf("file: fbx to c3b: %s<br>", $fbx);
+
+        if (!file_exists($target))
+            mkdir($target, 0755, true);
+
+        $baseName = basename($fbx, ".FBX");
+        $dir = dirname($fbx);
+        $c3b = "$target/$baseName.c3b";
+        $c3t = "$dir/$baseName.c3t";
+        $cmd = __DIR__ . "/../../../fbx-conv/mac/fbx-conv";
+
+        if (!is_file($c3b) || (filemtime($c3b) < filemtime($fbx)) || !is_file($c3t)) {
+            passthru("$cmd -a $fbx");
+            rename("$dir/$baseName.c3b", $c3b);
+            touch($c3b, filemtime($fbx));
+        } else {
+            printf("file: fbx file is latest.<br>");
+        }
+
+    }
 }
