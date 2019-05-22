@@ -97,7 +97,33 @@ class Resource extends Controller
         if (!empty($type)) {
             call_user_func(array($this, $funName), $outPath, $repo, $export_name, $change_mode);
         } else {
+            File::visit($outPath, true, function ($file) {
+                if (!is_dir($file))
+                    return;
 
+                $value = null;
+                if (is_file($file . "/.res-config")) {
+                    $value = json_decode(file_get_contents($file . "/.res-config"), true);
+                }
+
+                if ($value) {
+                    $export_name = $value["export_name"];
+                    $change_mode = $value["change_mode"];
+                    $type = $value["type"];
+                    $language = $value["language"];
+                    $langPath = "cn";
+                    if ($language == "lang_cn") {
+                        $langPath = "cn";
+                    } elseif ($language == "lang_tw") {
+                        $langPath = "tw";
+                    }
+                    $repo = $this->resGitPath . "/" . $langPath;
+                    $funName = camelize("build_" . $type);
+                    if ($export_name && $type) {
+                        call_user_func(array($this, $funName), $file, $repo, $export_name, $change_mode);
+                    }
+                }
+            });
         }
 
         return "";

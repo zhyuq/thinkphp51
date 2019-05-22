@@ -28,12 +28,14 @@
                     <option value="delete_old" {% if value.change_mode == "delete_old" %}selected="selected"{% endif %}>删除</option>
                 </select></td>
             <td><select class="type" onchange="save('{{ value.filePath }}', this.parentNode.parentNode)">
+                    <option></option>
                     <option value="copy_without_dir" {% if value.type == "copy_without_dir" %}selected="selected"{% endif %}>删除目录拷贝</option>
                     <option value="copy_with_dir" {% if value.type == "copy_with_dir" %}selected="selected"{% endif %}>带目录拷贝</option>
                     <option value="town" {% if value.type == "town" %}selected="selected"{% endif %}>城镇</option>
                     <option value="player" {% if value.type == "player" %}selected="selected"{% endif %}>主角</option>
                 </select></td>
             <td><select class="language" onchange="save('{{ value.filePath }}', this.parentNode.parentNode)">
+                    <option></option>
                     <option value="lang_cn" {% if value.type == "lang_cn" %}selected="selected"{% endif %}>大陆</option>
                     <option value="lang_tw" {% if value.type == "lang_cn" %}selected="selected"{% endif %}>台湾</option>
                 </select></td>
